@@ -2,12 +2,13 @@ import Link from "next/link"
 import { Icons } from "./Icons"
 import { buttonVariants } from "./ui/Button"
 import { cn } from "@/lib/utils"
-import { getAuthSession } from "@/lib/auth"
+import { authOptions } from "@/lib/auth"
 import UserAccountNav from "./UserAccountNav"
+import { getServerSession } from "next-auth"
 
 const Navbar = async () => {
 
-    const session = await getAuthSession()
+    const session = await getServerSession(authOptions)
 
     return (
         <>
@@ -24,7 +25,7 @@ const Navbar = async () => {
                     {/* Auth */}
 
                     {session?.user ? (
-                        <UserAccountNav user={session.user}/>
+                        <UserAccountNav user={session.user} />
                     ) : <Link className={cn(buttonVariants())} href="/sign-in">
                         Login
                     </Link>}
