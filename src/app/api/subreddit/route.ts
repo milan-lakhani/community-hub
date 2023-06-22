@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     try {
         const session = await getAuthSession()
 
-        if(!session?.user) {
+        if (!session?.user) {
             return new Response('UnAuthorized', { status: 401 })
         }
 
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
             }
         })
 
-        if(subredditExists) {
+        if (subredditExists) {
             return new Response('Subreddit already exists', { status: 409 })
         }
 
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         return new Response(subreddit.name)
 
     } catch (error) {
-        if(error instanceof z.ZodError) {
+        if (error instanceof z.ZodError) {
             return new Response(error.message, { status: 422 })
         }
         return new Response('Could not create a Subreddit at the moment. Please try again later :(', { status: 500 })
