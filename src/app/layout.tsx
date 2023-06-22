@@ -3,6 +3,7 @@ import { Toaster } from '@/components/ui/Toaster'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
+import Providers from './Providers'
 
 export const metadata = {
   title: 'Community Hub',
@@ -21,16 +22,18 @@ export default function RootLayout({
   return (
     <html lang='en' className={cn('bg-white text-slate-800 antialiased light', inter.className)}>
       <body className='min-h-screen bg-slate-50 antialiased'>
-        
-        {/* @ts-expect-error Server Component */}
-        <Navbar />
+        <Providers >
 
-        {authModal}
+          {/* @ts-expect-error Server Component */}
+          <Navbar />
 
-        <div className="container max-w-2xl mx-auto h-full pt-16">
-          {children}
-        </div>
-        <Toaster />
+          {authModal}
+
+          <div className="container max-w-2xl mx-auto h-full pt-16">
+            {children}
+          </div>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   )
