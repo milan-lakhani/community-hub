@@ -83,7 +83,7 @@ const Layout = async ({ children, params: { slug } }: { children: React.ReactNod
 
                         {
                             subreddit.creatorId !== session?.user?.id ? <div className="flex justify-between gap-x-4 py-3 ">
-                                <SubscribeLeaveToggle />
+                                <SubscribeLeaveToggle subredditId={subreddit.id} subredditName={subreddit.name} isSubscribed={isSubscribed}/>
                             </div>: null
                         }
                     </dl>
