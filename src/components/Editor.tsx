@@ -7,6 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type EditorJS from '@editorjs/editorjs'
 import { uploadFiles } from '@/lib/uploadthing'
 import { toast } from '@/hooks/use-toast'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { usePathname, useRouter } from 'next/navigation'
 
 
 interface EditorProps {
@@ -17,10 +20,12 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 
     const ref = useRef<EditorJS>()
     const _titleref = useRef<HTMLTextAreaElement>()
+    const pathname = usePathname()
+    const router = useRouter()
 
     const [isMounted, setIsMounted] = useState<boolean>(false)
 
-    const { register, handleSubmit, formState:{errors} } = useForm<PostCreationRequest>({
+    const { register, handleSubmit, formState: { errors } } = useForm<PostCreationRequest>({
         resolver: zodResolver(PostValidator),
         defaultValues: {
             subredditId,
@@ -102,7 +107,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
         if (isMounted) {
             init()
 
-            return () => { 
+            return () => {
                 ref.current?.destroy()
                 ref.current = undefined
             }
@@ -110,24 +115,71 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     }, [isMounted, InitializeEditor])
 
     useEffect(() => {
-        if(Object.keys(errors).length > 0) {
+        if (Object.keys(errors).length > 0) {
             for (const [key, value] of Object.entries(errors)) {
                 toast({
                     title: 'Something went wrong',
-                    description: (value as {message: string}).message,
+                    description: (value as { message: string }).message,
                     variant: 'destructive'
                 })
             }
         }
     }, [errors])
 
-    const {ref: titleRef, ...rest} = register('title')
+    const { mutate:createPost } = useMutation({
+        mutationFn: async ({ title, content, subredditId }: PostCreationRequest) => {
+            const payload: PostCreationRequest = {
+                title,
+                content,
+                subredditId
+            }
+
+            const { data } = await axios.post('/api/subreddit/post/create', payload)
+            return data
+
+        },
+        onError: (err) => {
+            return toast({
+                title: 'Something went wrong',
+                description: "Your post was not published",
+                variant: 'destructive'
+            })
+        },
+        onSuccess: (data) => {
+            // r/community/submit into r.community
+
+            const newPathName = pathname.split('/').slice(0, -1).join('/')
+            router.push(newPathName)
+            router.refresh()
+
+            return toast({
+                title: 'Success',
+                description: "Your post was published",
+                variant: "default"
+            })
+        }
+    })
+
+    async function onSubmit(data: PostCreationRequest) {
+        const blocks = await ref.current?.save()
+
+        const payload: PostCreationRequest = {
+            title: data.title,
+            content: blocks,
+            subredditId
+        }
+
+        createPost(payload)
+
+    }
+
+    const { ref: titleRef, ...rest } = register('title')
 
     return <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
-        <form id='subreddit-post-form' className='w-fit' onSubmit={handleSubmit(()=>{})}>
+        <form id='subreddit-post-form' className='w-fit' onSubmit={handleSubmit(() => { })}>
             <div className='prose prose-stone dark:prose-invert'>
                 <TextareaAutosize
-                    ref={(e)=> {
+                    ref={(e) => {
                         titleRef(e)
                         // @ts-ignore
                         _titleref.current = e
@@ -135,8 +187,8 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
                     {...rest}
                     placeholder='Title'
                     className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none' />
-        
-                    <div id='editor' className='min-h-[500px]' />
+
+                <div id='editor' className='min-h-[500px]' />
             </div>
         </form>
     </div>
