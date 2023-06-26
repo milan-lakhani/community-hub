@@ -16,7 +16,7 @@ interface PostFeedProps {
 const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
 
     const lastPostRef = useRef<HTMLDivElement>(null)
-    const { ref, entry } = useIntersection({
+    const { ref } = useIntersection({
         root: lastPostRef.current,
         threshold: 1,
     })
