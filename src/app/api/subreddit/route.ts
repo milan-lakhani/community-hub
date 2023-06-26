@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         if (error instanceof z.ZodError) {
             return new Response(error.message, { status: 422 })
         }
-        return new Response('Could not create a Subreddit at the moment. Please try again later :(', { status: 500 })
+        return new Response('Error in unsubscribing. Please try again later!!', { status: 500 })
 
     }
 }

@@ -24,7 +24,7 @@ const Layout = async ({ children, params: { slug } }: { children: React.ReactNod
 
     const subsription = !session?.user ? undefined : await db.subscription.findFirst({
         where: {
-            Subreddit: {
+            subreddit: {
                 name: slug
             },
             user: {
@@ -39,7 +39,7 @@ const Layout = async ({ children, params: { slug } }: { children: React.ReactNod
 
     const memberCount = await db.subscription.count({
         where: {
-            Subreddit: {
+            subreddit: {
                 name: slug
             },
         }
