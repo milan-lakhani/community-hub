@@ -7,7 +7,6 @@ import { useState } from "react"
 import { useMutation } from "@tanstack/react-query"
 import axios, { AxiosError } from "axios"
 import { CreateSubredditPayload } from "@/lib/validators/subreddit"
-import { z } from "zod"
 import { toast } from "@/hooks/use-toast"
 import { useCustomToast } from "@/hooks/use-custom-toast"
 
