@@ -30,7 +30,7 @@ const Post: FC<PostProps> = ({ subredditName, post, commentAmt, votesAmt:_votesA
             subredditName
               ?
               <>
-                <a href="" className="underline text-zinc-900 text-sm underline-offset-2">
+                <a href={`/r/${subredditName}`} className="underline text-zinc-900 text-sm underline-offset-2">
                   r/{subredditName}
                 </a>
                 <span className='px-1'>.</span>
