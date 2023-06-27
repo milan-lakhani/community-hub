@@ -118,7 +118,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
 
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
-            for (const [key, value] of Object.entries(errors)) {
+            for (const [,value] of Object.entries(errors)) {
                 toast({
                     title: 'Something went wrong',
                     description: (value as { message: string }).message,
@@ -140,14 +140,14 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             return data
 
         },
-        onError: (err) => {
+        onError: () => {
             return toast({
                 title: 'Something went wrong',
                 description: "Your post was not published",
                 variant: 'destructive'
             })
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             // r/community/submit into r.community
 
             const newPathName = pathname.split('/').slice(0, -1).join('/')

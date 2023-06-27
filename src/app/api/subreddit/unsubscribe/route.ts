@@ -29,7 +29,8 @@ export async function POST(req: Request) {
         const subreddit = await db.subreddit.findFirst({
             where: {
                 id: subredditId,
-                userId: session.user.id
+                creatorId: session.user.id
+                
             }
         })
 
