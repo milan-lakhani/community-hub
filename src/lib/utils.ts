@@ -2,7 +2,6 @@ import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { formatDistanceToNowStrict, parseISO } from 'date-fns'
 import locale from 'date-fns/locale/en-US'
-import { Post } from '@prisma/client'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
